@@ -1,15 +1,17 @@
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import React, { useEffect } from "react";
+import React from "react";
 import Divider from "../../components/Divider";
 import { RegisterUser } from "../../apicalls/users";
+import { message } from "antd";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { SetLoader } from "../../redux/loadersSlice";
 
 const rules = [
   {
     required: true,
-    message: "This field is required",
+    message: "required",
   },
 ];
 
@@ -22,16 +24,14 @@ function Register() {
       const response = await RegisterUser(values);
       navigate("/login");
       dispatch(SetLoader(false));
-      if (response?.success) {
-        message.success(response?.message);
-        console.log("Success Message", response?.message)
+      if (response.success) {
+        message.success(response.message);
       } else {
-        throw new Error(response?.message);
+        throw new Error(response.message);
       }
-    } catch (err) {
+    } catch (error) {
       dispatch(SetLoader(false));
-      message.error(err?.message);
-      console.log("Error Message", err?.message)
+      message.error(error.message);
     }
   };
   useEffect(() => {
@@ -39,49 +39,30 @@ function Register() {
       navigate("/");
     }
   }, []);
-
   return (
-    <div className="h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex justify-center items-center">
-      <div className="bg-white shadow-lg rounded-lg w-[400px] p-8">
-        <h1 className="text-3xl font-bold text-center text-purple-600">
-          Create an Account
+    <div className="h-screen bg-primary flex justify-center items-center">
+      <div className="bg-white p-5 rounded w-[450px]">
+        <h1 className="text-primary text-2xl">
+          SH MP - <span className="text-gray-400">REGISTER</span>
         </h1>
-        <p className="text-gray-500 text-center mb-5">
-          Join us by registering below
-        </p>
         <Divider />
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item label="Name" name="name" rules={rules}>
-            <Input
-              placeholder="Enter your name"
-              className="border-gray-300 rounded-lg p-2"
-            />
+            <Input placeholder="Name" />
           </Form.Item>
           <Form.Item label="Email" name="email" rules={rules}>
-            <Input
-              placeholder="Enter your email"
-              className="border-gray-300 rounded-lg p-2"
-            />
+            <Input placeholder="Email" />
           </Form.Item>
           <Form.Item label="Password" name="password" rules={rules}>
-            <Input
-              type="password"
-              placeholder="Enter your password"
-              className="border-gray-300 rounded-lg p-2"
-            />
+            <Input type="password" placeholder="Password" />
           </Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg mt-3 transition-colors duration-300"
-          >
+          <Button type="primary" htmlType="submit" block className="mt-2">
             Register
           </Button>
-          <div className="mt-4 text-center">
-            <span className="text-gray-600">
+          <div className="mt-5 text-center">
+            <span className="text-gray-500">
               Already have an account?{" "}
-              <Link to="/" className="text-purple-600 font-semibold hover:underline">
+              <Link to="/login" className="text-primary">
                 Login
               </Link>
             </span>

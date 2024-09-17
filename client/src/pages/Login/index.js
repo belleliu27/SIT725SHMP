@@ -1,14 +1,14 @@
 import { Button, Divider, Form, Input, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { LoginUser } from "../../apicalls/users";
+import { useDispatch } from "react-redux";
 import { SetLoader } from "../../redux/loadersSlice";
 
 const rules = [
   {
     required: true,
-    message: "This field is required",
+    message: "required",
   },
 ];
 
@@ -20,67 +20,49 @@ function Login() {
       dispatch(SetLoader(true));
       const response = await LoginUser(values);
       dispatch(SetLoader(false));
-      if (response?.success) {
-        message.success(response?.message);
-        localStorage.setItem('token', response?.data);
+      if (response.success) {
+        message.success(response.message);
+        localStorage.setItem("token", response.data);
         window.location.href = "/";
       } else {
-        throw new Error(response?.message);
+        throw new Error(response.message);
       }
-    } catch (err) {
+    } catch (error) {
       dispatch(SetLoader(false));
-      message.error(err?.message);
+      message.error(error.message);
     }
   };
-
   useEffect(() => {
     if (localStorage.getItem("token")) {
       navigate("/");
     }
   }, []);
-
   return (
-    <div className="h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex justify-center items-center">
-      <div className="bg-white shadow-lg rounded-lg w-[400px] p-8">
-        <h1 className="text-3xl font-bold text-center text-purple-600">
-          Welcome to SH MP
+    <div className="h-screen bg-primary flex justify-center items-center">
+      <div className="bg-white p-5 rounded w-[450px]">
+        <h1 className="text-primary text-2xl">
+          SH MP - <span className="text-gray-400">Login</span>
         </h1>
-        <p className="text-gray-500 text-center mb-5">
-          Please login to your account
-        </p>
         <Divider />
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item label="Email" name="email" rules={rules}>
-            <Input
-              placeholder="Enter your email"
-              className="border-gray-300 rounded-lg p-2"
-            />
+            <Input placeholder="Email" />
           </Form.Item>
           <Form.Item label="Password" name="password" rules={rules}>
-            <Input
-              type="password"
-              placeholder="Enter your password"
-              className="border-gray-300 rounded-lg p-2"
-            />
+            <Input type="password" placeholder="Password" />
           </Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg mt-3 transition-colors duration-300"
-          >
+          <Button type="primary" htmlType="submit" block className="mt-2">
             Login
           </Button>
-          <div className="mt-4 text-center">
-            <span className="text-gray-600">
+          <div className="mt-5 text-center">
+            <span className="text-gray-500">
               Don't have an account?{" "}
-              <Link to="/register" className="text-purple-600 font-semibold hover:underline">
+              <Link to="/register" className="text-primary">
                 Register
               </Link>
             </span>
           </div>
         </Form>
-
       </div>
     </div>
   );

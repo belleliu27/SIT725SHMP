@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const Product = require("../models/productModel");
 const authMiddleware = require("../middlewares/authMiddleware");
+const cloudinary = require("../config/cloudinaryConfig");
+const multer = require("multer");
 
 // add a new product
 router.post("/add-product", authMiddleware, async (req, res) => {
@@ -73,8 +75,6 @@ router.delete("/delete-product/:id", authMiddleware, async (req, res) => {
     });
   }
 });
-
-module.exports = router;
 
 // get image from pc
 const storage = multer.diskStorage({
