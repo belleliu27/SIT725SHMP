@@ -4,7 +4,7 @@ import { Button, message } from "antd";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { SetLoader } from "../../redux/loadersSlice";
-import { GetProducts } from "../../apicalls/products";
+import { GetProducts, UpdateProductStatus } from "../../apicalls/products";
 import { Table } from "antd";
 
 function Products() {
@@ -18,7 +18,24 @@ function Products() {
       const response = await GetProducts(null);
       dispatch(SetLoader(false));
       if (response.success) {
-        setProducts(response.products);
+        setProducts(response.data);
+      }
+    } catch (error) {
+      dispatch(SetLoader(false));
+      message.error(error.message);
+    }
+  };
+
+  const onStatusUpdate = async (id, status) => {
+    try {
+      dispatch(SetLoader(true));
+      const response = await UpdateProductStatus(id, status);
+      dispatch(SetLoader(false));
+      if (response.success) {
+        message.success(response.message);
+        getData();
+      } else {
+        throw new Error(response.message);
       }
     } catch (error) {
       dispatch(SetLoader(false));
@@ -57,6 +74,9 @@ function Products() {
     {
       title: "Status",
       dataIndex: "status",
+      render: (text, record) => {
+        return record.status.toUpperCase();
+      },
     },
     {
       title: "Added On",
@@ -68,7 +88,43 @@ function Products() {
       title: "Action",
       dataIndex: "action",
       render: (text, record) => {
-        return <div className="flex gap-5"></div>;
+        const { status, _id } = record;
+        return (
+          <div className="flex gap-3">
+            {status === "pending" && (
+              <span
+                className="underline cursor-pointer"
+                onClick={() => onStatusUpdate(_id, "approved")}
+              >
+                Approve
+              </span>
+            )}
+            {status === "pending" && (
+              <span
+                className="underline cursor-pointer"
+                onClick={() => onStatusUpdate(_id, "rejected")}
+              >
+                Reject
+              </span>
+            )}
+            {status === "approved" && (
+              <span
+                className="underline cursor-pointer"
+                onClick={() => onStatusUpdate(_id, "blocked")}
+              >
+                Block
+              </span>
+            )}
+            {status === "blocked" && (
+              <span
+                className="underline cursor-pointer"
+                onClick={() => onStatusUpdate(_id, "approved")}
+              >
+                Unblock
+              </span>
+            )}
+          </div>
+        );
       },
     },
   ];
