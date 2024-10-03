@@ -1,12 +1,14 @@
+import { useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import ProtectedPage from "./components/ProtectedPage";
 import Spinner from "./components/Spinner";
-import { useSelector } from "react-redux";
 import Admin from "./pages/Admin";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import ProductInfo from "./pages/ProductInfo";
+import Profile from "./pages/Profile";
+import Register from "./pages/Register";
+import Chat from "./components/Chat";
 
 function App() {
   const { loading } = useSelector((state) => state.loaders);
@@ -20,6 +22,14 @@ function App() {
             element={
               <ProtectedPage>
                 <Home />
+              </ProtectedPage>
+            }
+          />
+          <Route
+            path="/product/:id"
+            element={
+              <ProtectedPage>
+                <ProductInfo />
               </ProtectedPage>
             }
           />
@@ -41,6 +51,7 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/chat" element={<Chat />} /> {/* Add Chat route */}
         </Routes>
       </BrowserRouter>
     </div>
