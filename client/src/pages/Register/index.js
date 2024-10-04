@@ -1,12 +1,10 @@
-import { Button, Form, Input } from "antd";
+import React, { useEffect } from "react";
+import { Button, Form, Input, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import React from "react";
 import Divider from "../../components/Divider";
 import { RegisterUser } from "../../apicalls/users";
-import { message } from "antd";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { SetLoader } from "../../redux/loadersSlice";
+import { useDispatch } from "react-redux";
 
 const rules = [
   {
@@ -14,7 +12,6 @@ const rules = [
     message: "required",
   },
 ];
-
 function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,9 +19,9 @@ function Register() {
     try {
       dispatch(SetLoader(true));
       const response = await RegisterUser(values);
-      navigate("/login");
       dispatch(SetLoader(false));
       if (response.success) {
+        navigate("/login");
         message.success(response.message);
       } else {
         throw new Error(response.message);
@@ -34,16 +31,18 @@ function Register() {
       message.error(error.message);
     }
   };
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
       navigate("/");
     }
   }, []);
+
   return (
     <div className="h-screen bg-primary flex justify-center items-center">
       <div className="bg-white p-5 rounded w-[450px]">
         <h1 className="text-primary text-2xl">
-          SH MP - <span className="text-gray-400">REGISTER</span>
+          SHMP - <span className="text-gray-400 text-2xl">REGISTER</span>
         </h1>
         <Divider />
         <Form layout="vertical" onFinish={onFinish}>
@@ -56,9 +55,11 @@ function Register() {
           <Form.Item label="Password" name="password" rules={rules}>
             <Input type="password" placeholder="Password" />
           </Form.Item>
+
           <Button type="primary" htmlType="submit" block className="mt-2">
             Register
           </Button>
+
           <div className="mt-5 text-center">
             <span className="text-gray-500">
               Already have an account?{" "}

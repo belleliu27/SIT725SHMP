@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
 import { Modal, Tabs, Form, Input, Row, Col, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useDispatch, useSelector } from "react-redux";
 import { AddProduct, EditProduct } from "../../../apicalls/products";
 import { SetLoader } from "../../../redux/loadersSlice";
+import React, { useEffect } from "react";
 import Images from "./Images";
 
 const additionalThings = [
@@ -31,6 +31,7 @@ const rules = [
     message: "Required",
   },
 ];
+
 function ProductsForm({
   showProductForm,
   setShowProductForm,
@@ -51,7 +52,6 @@ function ProductsForm({
         values.status = "pending";
         response = await AddProduct(values);
       }
-
       dispatch(SetLoader(false));
       if (response.success) {
         message.success(response.message);
@@ -128,6 +128,7 @@ function ProductsForm({
                   </Form.Item>
                 </Col>
               </Row>
+
               <div className="flex gap-10">
                 {additionalThings.map((item) => {
                   return (
@@ -150,6 +151,25 @@ function ProductsForm({
                   );
                 })}
               </div>
+
+              <Form.Item
+                label="Show Bids on Product Page"
+                name="showBidsOnProductPage"
+                valuePropName="checked"
+              >
+                <Input
+                  type="checkbox"
+                  onChange={(e) => {
+                    formRef.current.setFieldsValue({
+                      showBidsOnProductPage: e.target.checked,
+                    });
+                  }}
+                  checked={formRef.current?.getFieldValue(
+                    "showBidsOnProductPage"
+                  )}
+                  style={{ width: 50, marginLeft: 20 }}
+                />
+              </Form.Item>
             </Form>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Images" key="2" disabled={!selectedProduct}>

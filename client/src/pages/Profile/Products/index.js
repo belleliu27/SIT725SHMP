@@ -1,13 +1,14 @@
+import { Button, message, Table } from "antd";
 import React, { useEffect } from "react";
-import { Button, message } from "antd";
-import ProductsForm from "./ProductsForm";
-import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { SetLoader } from "../../../redux/loadersSlice";
+import moment from "moment";
 import { DeleteProduct, GetProducts } from "../../../apicalls/products";
-import { Table } from "antd";
+import { SetLoader } from "../../../redux/loadersSlice";
+import ProductsForm from "./ProductsForm";
+import Bids from "./Bids";
 
 function Products() {
+  const [showBids, setShowBids] = React.useState(false);
   const [selectedProduct, setSelectedProduct] = React.useState(null);
   const [products, setProducts] = React.useState([]);
   const [showProductForm, setShowProductForm] = React.useState(false);
@@ -17,10 +18,12 @@ function Products() {
   const getData = async () => {
     try {
       dispatch(SetLoader(true));
-      const response = await GetProducts({ seller: user._id });
+      const response = await GetProducts({
+        seller: user._id,
+      });
       dispatch(SetLoader(false));
       if (response.success) {
-        setProducts(response.products);
+        setProducts(response.data);
       }
     } catch (error) {
       dispatch(SetLoader(false));
@@ -47,12 +50,21 @@ function Products() {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: "Product",
+      dataIndex: "image",
+      render: (text, record) => {
+        return (
+          <img
+            src={record?.images?.length > 0 ? record.images[0] : ""}
+            alt=""
+            className="w-20 h-20 object-cover rounded-md"
+          />
+        );
+      },
     },
     {
-      title: "Description",
-      dataIndex: "description",
+      title: "Name",
+      dataIndex: "name",
     },
     {
       title: "Price",
@@ -81,7 +93,7 @@ function Products() {
       dataIndex: "action",
       render: (text, record) => {
         return (
-          <div className="flex gap-5">
+          <div className="flex gap-5 items-center">
             <i
               className="ri-delete-bin-line"
               onClick={() => {
@@ -95,6 +107,16 @@ function Products() {
                 setShowProductForm(true);
               }}
             ></i>
+
+            <span
+              className="underline cursor-pointer"
+              onClick={() => {
+                setSelectedProduct(record);
+                setShowBids(true);
+              }}
+            >
+              Show Bids
+            </span>
           </div>
         );
       },
@@ -124,6 +146,14 @@ function Products() {
           setShowProductForm={setShowProductForm}
           selectedProduct={selectedProduct}
           getData={getData}
+        />
+      )}
+
+      {showBids && (
+        <Bids
+          showBidsModal={showBids}
+          setShowBidsModal={setShowBids}
+          selectedProduct={selectedProduct}
         />
       )}
     </div>
