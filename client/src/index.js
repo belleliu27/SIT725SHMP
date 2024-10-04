@@ -14,8 +14,8 @@ root.render(
       theme={{
         components: {
           Button: {
-            colorPrimary: "#40513B",
-            colorPrimaryHover: "#40513B",
+            colorPrimary: "#4682B4",
+            colorPrimaryHover: "#4682B4",
             borderRadius: "2px",
             boxShadow: "none",
           },
